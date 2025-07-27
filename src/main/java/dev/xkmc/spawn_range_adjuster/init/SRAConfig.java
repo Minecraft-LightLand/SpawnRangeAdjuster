@@ -21,7 +21,7 @@ public class SRAConfig {
 			maxSpawnYDiff = builder.comment("Maximum spawn vertical distance to player")
 					.defineInRange("maxSpawnYDiff", 128, 0, 128);
 
-			maxMonsterPerChunk = builder.comment("Maximum number of monster per chunk * 189")
+			maxMonsterPerChunk = builder.comment("Maximum number of monster per 289 chunks")
 					.defineInRange("maxMonsterPerChunk", 70, 0, 128);
 
 			maxTotalMonster = builder.comment("Maximum number of monster in total. 0 means unlimited")

@@ -4,6 +4,8 @@ license="LGPL v2.1"
 [[mods]]
 modId="spawn_range_adjuster"
 version="${file.jarVersion}" #mandatory
+logoFile="logo.png" #optional
+logoBlur=false
 displayName="Spawn Cap / Range Adjuster" #mandatory
 description='''
 Allow customization of spawn range and cap
