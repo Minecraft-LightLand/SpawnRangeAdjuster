@@ -1,0 +1,17 @@
+{
+	"required": true,
+	"priority": 1000,
+	"package": "dev.xkmc.spawn_range_adjuster.mixin",
+	"compatibilityLevel": "JAVA_16",
+	"refmap": "spawn_range_adjuster.refmap.json",
+	"mixins": [
+		"NaturalSpanwerMixin",
+		"SpawnStateMixin"
+	],
+	"client": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"minVersion": "0.8"
+}

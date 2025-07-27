@@ -1,0 +1,22 @@
+modLoader="javafml"
+loaderVersion="[46,)"
+license="LGPL v2.1"
+[[mods]]
+modId="spawn_range_adjuster"
+version="${file.jarVersion}" #mandatory
+displayName="Spawn Cap / Range Adjuster" #mandatory
+description='''
+Allow customization of spawn range and cap
+'''
+[[dependencies.spawn_range_adjuster]]
+    modId="forge"
+    mandatory=true
+    versionRange="[46.0.0,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.spawn_range_adjuster]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20,1.21)"
+    ordering="NONE"
+    side="BOTH"

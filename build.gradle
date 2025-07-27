@@ -1,0 +1,194 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public' }
+    }
+    dependencies {
+        classpath "org.spongepowered:mixingradle:${mixingradle_version}"
+        classpath 'org.parchmentmc:librarian:1.+'
+    }
+}
+
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.darkhax.curseforgegradle' version '[1.1.24,)'
+    id "at.stnwtr.gradle-secrets-plugin" version "1.0.1"
+    id "com.modrinth.minotaur" version "2.+"
+
+}
+
+apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+
+version = "${ll_version}"
+group = "dev.xkmc.${modid}"
+archivesBaseName = "${modid}"
+
+if (lljij.toBoolean()) jarJar.enable()
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    //mappings channel: 'parchment', version: '1.19.3-2023.03.12-1.19.4'
+    mappings channel: 'official', version: "${minecraft_version}"
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'info'
+            mods {
+                "${modid}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'info'
+            mods {
+                "${modid}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'info'
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', "${modid}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                "${modid}" {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+mixin {
+    add sourceSets.main, "${modid}.refmap.json"
+    config "${modid}.mixins.json"
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "${modid}",
+                "Specification-Vendor"    : "xkmc",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "xkmc",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'MixinConfigs'            : "${modid}.mixins.json"
+        ])
+    }
+}
+
+java {
+    withSourcesJar()
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+if (lljij.toBoolean()) {
+
+    reobf {
+        jarJar {}
+    }
+
+    tasks.jarJar.finalizedBy('reobfJarJar')
+
+    tasks.jarJar.configure {
+        archiveClassifier.set('')
+    }
+
+    jar {
+        archiveClassifier.set('slim')
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:${mixin_extras_version}"))
+    if (rootMod.toBoolean()) {
+        implementation(jarJar("com.github.llamalad7.mixinextras:mixinextras-forge:${mixin_extras_version}")) {
+            transitive = false
+            jarJar.ranged(it, "[${mixin_extras_version},)")
+        }
+    } else {
+        implementation("com.github.llamalad7.mixinextras:mixinextras-forge:${mixin_extras_version}")
+    }
+    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+}
+
+// project specific
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.llamalad7.mixinextras"
+        }
+    }
+    maven { // Registrate
+        url "https://maven.tterrag.com/"
+    }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+
+    maven {
+        // Location of the maven for vazkii's mods
+        name 'blamejared'
+        url 'https://maven.blamejared.com'
+    }
+    maven {
+        url 'https://www.cursemaven.com'
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        // Location of the maven that hosts JEI files (and TiC)
+        name 'Progwml6 maven'
+        url 'https://dvs1.progwml6.com/files/maven'
+    }
+    mavenLocal();
+}
+
+dependencies {
+}
