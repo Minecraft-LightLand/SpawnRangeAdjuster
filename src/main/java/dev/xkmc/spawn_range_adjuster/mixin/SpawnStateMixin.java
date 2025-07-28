@@ -18,7 +18,7 @@ public class SpawnStateMixin {
 		if (instance == MobCategory.MONSTER) {
 			return SRAConfig.COMMON.maxMonsterPerChunk.get();
 		}
-		return original.call(instance);
+		return (int) (original.call(instance) * SRAConfig.COMMON.maxCreaturePerChunkFactor.get());
 	}
 
 
@@ -26,8 +26,13 @@ public class SpawnStateMixin {
 			at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntOpenHashMap;getInt(Ljava/lang/Object;)I"))
 	private int spawnRangeAdjuster$getCurrent(Object2IntOpenHashMap instance, Object k, Operation<Integer> original) {
 		int ans = original.call(instance, k);
-		if (k == MobCategory.MONSTER) {
-			int max = SRAConfig.COMMON.maxTotalMonster.get();
+		if (k instanceof MobCategory c) {
+			int max;
+			if (c == MobCategory.MONSTER) {
+				max = SRAConfig.COMMON.maxTotalMonster.get();
+			} else {
+				max = (int) (SRAConfig.COMMON.maxTotalCreatureFactor.get() * c.getMaxInstancesPerChunk());
+			}
 			if (max > 0 && ans > max) {
 				return ans * 100;
 			}

@@ -13,6 +13,8 @@ public class SRAConfig {
 		public final ForgeConfigSpec.IntValue maxSpawnYDiff;
 		public final ForgeConfigSpec.IntValue maxMonsterPerChunk;
 		public final ForgeConfigSpec.IntValue maxTotalMonster;
+		public final ForgeConfigSpec.DoubleValue maxCreaturePerChunkFactor;
+		public final ForgeConfigSpec.DoubleValue maxTotalCreatureFactor;
 
 		Common(ForgeConfigSpec.Builder builder) {
 			maxSpawnRange = builder.comment("Maximum spawn distance to player")
@@ -27,6 +29,11 @@ public class SRAConfig {
 			maxTotalMonster = builder.comment("Maximum number of monster in total. 0 means unlimited")
 					.defineInRange("maxTotalMonster", 0, 0, 10000);
 
+			maxCreaturePerChunkFactor = builder.comment("Maximum number of each types of creatures per 289 chunks, as a factor of vanilla limits")
+					.defineInRange("maxCreaturePerChunkFactor", 1d, 0, 1);
+
+			maxTotalCreatureFactor = builder.comment("Maximum number of creatures in total for each types, as a factor of vanilla limits per 289 chunks. 0 means unlimited")
+					.defineInRange("maxTotalCreatureFactor", 0d, 0, 100);
 
 		}
 

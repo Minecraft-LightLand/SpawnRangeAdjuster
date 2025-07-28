@@ -1,2 +1,5 @@
+0.0.4
+- Add creature config
+
 0.0.3
 - Initial Release
