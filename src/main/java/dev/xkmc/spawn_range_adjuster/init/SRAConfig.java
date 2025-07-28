@@ -15,6 +15,7 @@ public class SRAConfig {
 		public final ForgeConfigSpec.IntValue maxTotalMonster;
 		public final ForgeConfigSpec.DoubleValue maxCreaturePerChunkFactor;
 		public final ForgeConfigSpec.DoubleValue maxTotalCreatureFactor;
+		public final ForgeConfigSpec.DoubleValue skipSpawnChance;
 
 		Common(ForgeConfigSpec.Builder builder) {
 			maxSpawnRange = builder.comment("Maximum spawn distance to player")
@@ -24,16 +25,19 @@ public class SRAConfig {
 					.defineInRange("maxSpawnYDiff", 128, 0, 128);
 
 			maxMonsterPerChunk = builder.comment("Maximum number of monster per 289 chunks")
-					.defineInRange("maxMonsterPerChunk", 70, 0, 128);
+					.defineInRange("maxMonsterPerChunk", 30, 0, 128);
 
 			maxTotalMonster = builder.comment("Maximum number of monster in total. 0 means unlimited")
-					.defineInRange("maxTotalMonster", 0, 0, 10000);
+					.defineInRange("maxTotalMonster", 150, 0, 10000);
 
 			maxCreaturePerChunkFactor = builder.comment("Maximum number of each types of creatures per 289 chunks, as a factor of vanilla limits")
-					.defineInRange("maxCreaturePerChunkFactor", 1d, 0, 1);
+					.defineInRange("maxCreaturePerChunkFactor", 0.5d, 0, 1);
 
 			maxTotalCreatureFactor = builder.comment("Maximum number of creatures in total for each types, as a factor of vanilla limits per 289 chunks. 0 means unlimited")
-					.defineInRange("maxTotalCreatureFactor", 0d, 0, 100);
+					.defineInRange("maxTotalCreatureFactor", 2d, 0, 100);
+
+			skipSpawnChance = builder.comment("Chance for each chunk to skip spawn check per tick")
+					.defineInRange("skipSpawnChance", 0.75, 0, 1);
 
 		}
 

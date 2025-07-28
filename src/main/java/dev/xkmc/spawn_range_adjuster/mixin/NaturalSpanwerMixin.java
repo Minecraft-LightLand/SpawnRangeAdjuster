@@ -18,6 +18,10 @@ public class NaturalSpanwerMixin {
 
 	@Inject(method = "spawnForChunk", at = @At("HEAD"), cancellable = true)
 	private static void spawnRangeAdjuster$spawnEarlyTermination(ServerLevel sl, LevelChunk c, NaturalSpawner.SpawnState state, boolean friendly, boolean hostile, boolean persistent, CallbackInfo ci) {
+		if (!persistent && (sl.random.nextFloat() < SRAConfig.COMMON.skipSpawnChance.get())) {
+			ci.cancel();
+			return;
+		}
 		int dist = SRAConfig.COMMON.maxSpawnRange.get();
 		if (dist > 100) return;
 		var middle = c.getPos().getMiddleBlockPosition(64);

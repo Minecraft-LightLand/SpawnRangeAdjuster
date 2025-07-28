@@ -1,3 +1,6 @@
+0.0.5
+- Add chunk spawn skip chance
+
 0.0.4
 - Add creature config
 
